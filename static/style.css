@@ -1,0 +1,1001 @@
+/* ============================================
+   AI Traffic Signal Control System - Styles
+   Premium dark theme with glassmorphism
+   ============================================ */
+
+/* --- CSS Variables --- */
+:root {
+    --bg-primary: #0a0e1a;
+    --bg-secondary: #111827;
+    --bg-card: rgba(17, 24, 39, 0.8);
+    --bg-glass: rgba(255, 255, 255, 0.03);
+    --border-color: rgba(255, 255, 255, 0.06);
+    --border-glow: rgba(99, 102, 241, 0.15);
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    --accent-blue: #6366f1;
+    --accent-purple: #8b5cf6;
+    --accent-cyan: #06b6d4;
+    --signal-red: #ef4444;
+    --signal-yellow: #eab308;
+    --signal-green: #22c55e;
+    --signal-red-glow: rgba(239, 68, 68, 0.5);
+    --signal-yellow-glow: rgba(234, 179, 8, 0.5);
+    --signal-green-glow: rgba(34, 197, 94, 0.5);
+    --road-color: #1e293b;
+    --road-marking: rgba(255, 255, 255, 0.15);
+    --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+    --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 16px;
+    --radius-xl: 20px;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.4);
+    --shadow-lg: 0 8px 32px rgba(0,0,0,0.5);
+    --shadow-glow: 0 0 20px rgba(99, 102, 241, 0.15);
+}
+
+/* --- Reset & Base --- */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    font-size: 14px;
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: var(--font-sans);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    min-height: 100vh;
+    overflow-x: hidden;
+    background-image:
+        radial-gradient(ellipse at 20% 50%, rgba(99, 102, 241, 0.05) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 20%, rgba(139, 92, 246, 0.04) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 80%, rgba(6, 182, 212, 0.03) 0%, transparent 50%);
+}
+
+/* --- Header --- */
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1.5rem;
+    background: rgba(17, 24, 39, 0.9);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border-color);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.logo-icon svg {
+    width: 36px;
+    height: 36px;
+    filter: drop-shadow(0 2px 8px rgba(99, 102, 241, 0.3));
+}
+
+.logo-light-green {
+    animation: pulse-green 2s ease-in-out infinite;
+}
+
+@keyframes pulse-green {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
+}
+
+.logo h1 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #f1f5f9, #6366f1);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -0.02em;
+}
+
+.subtitle {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    font-weight: 400;
+    letter-spacing: 0.02em;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.status-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.35rem 0.75rem;
+    background: var(--bg-glass);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--text-muted);
+    transition: background 0.3s;
+}
+
+.status-badge.running .status-dot {
+    background: var(--signal-green);
+    box-shadow: 0 0 8px var(--signal-green-glow);
+    animation: pulse-dot 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.3); }
+}
+
+.timer-display {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.timer-label {
+    font-size: 0.6rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.timer-value {
+    font-family: var(--font-mono);
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--accent-cyan);
+}
+
+/* --- Main Layout --- */
+.main-content {
+    display: grid;
+    grid-template-columns: 260px 1fr 280px;
+    gap: 0;
+    height: calc(100vh - 56px);
+    overflow: hidden;
+}
+
+/* --- Panels --- */
+.panel {
+    background: rgba(17, 24, 39, 0.6);
+    backdrop-filter: blur(10px);
+    border-right: 1px solid var(--border-color);
+    padding: 1rem;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(99,102,241,0.2) transparent;
+}
+
+.analytics-panel {
+    border-right: none;
+    border-left: 1px solid var(--border-color);
+}
+
+.panel::-webkit-scrollbar {
+    width: 4px;
+}
+.panel::-webkit-scrollbar-thumb {
+    background: rgba(99,102,241,0.2);
+    border-radius: 4px;
+}
+
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.panel-header h2 {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.panel-icon {
+    font-size: 1rem;
+}
+
+/* --- Control Groups --- */
+.control-group {
+    margin-bottom: 1.25rem;
+}
+
+.control-group > label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+}
+
+.button-group {
+    display: flex;
+    gap: 0.35rem;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.45rem 0.7rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    background: var(--bg-glass);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    font-size: 0.72rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.btn svg {
+    width: 12px;
+    height: 12px;
+}
+
+.btn:hover:not(:disabled) {
+    background: rgba(255,255,255,0.06);
+    border-color: rgba(255,255,255,0.12);
+    transform: translateY(-1px);
+}
+
+.btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.btn-start:hover:not(:disabled) {
+    border-color: var(--signal-green);
+    box-shadow: 0 0 12px rgba(34, 197, 94, 0.2);
+}
+
+.btn-stop:hover:not(:disabled) {
+    border-color: var(--signal-red);
+    box-shadow: 0 0 12px rgba(239, 68, 68, 0.2);
+}
+
+.btn-reset:hover:not(:disabled) {
+    border-color: var(--accent-blue);
+    box-shadow: 0 0 12px rgba(99, 102, 241, 0.2);
+}
+
+/* --- Sliders --- */
+.slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 4px;
+    border-radius: 4px;
+    background: rgba(255,255,255,0.08);
+    outline: none;
+    cursor: pointer;
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--accent-blue);
+    border: 2px solid var(--bg-primary);
+    box-shadow: 0 0 8px rgba(99, 102, 241, 0.4);
+    cursor: pointer;
+    transition: transform 0.15s;
+}
+
+.slider::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+}
+
+.slider-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.6rem;
+    color: var(--text-muted);
+    margin-top: 0.25rem;
+}
+
+/* --- Rate Controls --- */
+.rate-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.rate-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.rate-row .slider {
+    flex: 1;
+}
+
+.rate-val {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--accent-cyan);
+    min-width: 28px;
+    text-align: right;
+}
+
+.direction-badge {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: white;
+    flex-shrink: 0;
+}
+
+.direction-badge.north { background: linear-gradient(135deg, #6366f1, #4f46e5); }
+.direction-badge.south { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
+.direction-badge.east { background: linear-gradient(135deg, #06b6d4, #0891b2); }
+.direction-badge.west { background: linear-gradient(135deg, #f59e0b, #d97706); }
+
+/* --- Algorithm Info --- */
+.algo-info {
+    background: var(--bg-glass);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 0.65rem;
+}
+
+.algo-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.3rem 0;
+    font-size: 0.7rem;
+}
+
+.algo-row span:first-child {
+    color: var(--text-muted);
+}
+
+.mono {
+    font-family: var(--font-mono);
+    color: var(--accent-cyan);
+}
+
+/* ============================================
+   CENTER SECTION: Intersection
+   ============================================ */
+.center-section {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    overflow-y: auto;
+    gap: 1rem;
+}
+
+/* --- Stats Row --- */
+.stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.75rem;
+}
+
+.stat-card {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.75rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+    border-color: var(--border-glow);
+    box-shadow: var(--shadow-glow);
+    transform: translateY(-2px);
+}
+
+.stat-icon {
+    font-size: 1.4rem;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-sm);
+    background: var(--bg-glass);
+}
+
+.stat-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-value {
+    font-family: var(--font-mono);
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.2;
+}
+
+.stat-label {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* --- Intersection Visualization --- */
+.intersection-wrapper {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+}
+
+.intersection {
+    position: relative;
+    width: 440px;
+    height: 440px;
+    background: var(--bg-secondary);
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+}
+
+/* Road sections */
+.road-section {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.road-north {
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 170px;
+    background: linear-gradient(180deg, var(--road-color), rgba(30,41,59,0.5));
+}
+
+.road-south {
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 170px;
+    background: linear-gradient(0deg, var(--road-color), rgba(30,41,59,0.5));
+}
+
+.road-east {
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 170px;
+    height: 100px;
+    flex-direction: row;
+    background: linear-gradient(270deg, var(--road-color), rgba(30,41,59,0.5));
+}
+
+.road-west {
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 170px;
+    height: 100px;
+    flex-direction: row-reverse;
+    background: linear-gradient(90deg, var(--road-color), rgba(30,41,59,0.5));
+}
+
+/* Road markings */
+.road-marking {
+    position: absolute;
+    z-index: 1;
+}
+
+.marking-h {
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: repeating-linear-gradient(90deg, var(--road-marking) 0, var(--road-marking) 20px, transparent 20px, transparent 40px);
+    transform: translateY(-50%);
+}
+
+.marking-v {
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: repeating-linear-gradient(180deg, var(--road-marking) 0, var(--road-marking) 20px, transparent 20px, transparent 40px);
+    transform: translateX(-50%);
+}
+
+/* Intersection center */
+.intersection-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100px;
+    height: 100px;
+    background: rgba(30, 41, 59, 0.9);
+    border: 1px solid rgba(255,255,255,0.05);
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.center-pulse {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: rgba(99, 102, 241, 0.3);
+    border: 2px solid rgba(99, 102, 241, 0.5);
+    animation: center-pulse 3s ease-in-out infinite;
+}
+
+@keyframes center-pulse {
+    0%, 100% { transform: scale(1); opacity: 0.5; }
+    50% { transform: scale(1.2); opacity: 1; }
+}
+
+/* --- Traffic Signals --- */
+.signal-light {
+    display: flex;
+    gap: 3px;
+    padding: 5px 6px;
+    background: #0a0e1a;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.1);
+    z-index: 10;
+    position: relative;
+    box-shadow: var(--shadow-md);
+}
+
+.north-light, .south-light {
+    flex-direction: column;
+    margin-top: 6px;
+}
+
+.south-light {
+    margin-top: auto;
+    margin-bottom: 6px;
+}
+
+.east-light, .west-light {
+    flex-direction: row;
+    margin: auto 6px;
+}
+
+.light {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    transition: all 0.4s ease;
+}
+
+.light.red {
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.light.yellow {
+    background: rgba(234, 179, 8, 0.15);
+    border: 1px solid rgba(234, 179, 8, 0.2);
+}
+
+.light.green {
+    background: rgba(34, 197, 94, 0.15);
+    border: 1px solid rgba(34, 197, 94, 0.2);
+}
+
+.light.red.active {
+    background: var(--signal-red);
+    box-shadow: 0 0 12px var(--signal-red-glow), 0 0 24px rgba(239,68,68,0.3);
+    border-color: var(--signal-red);
+}
+
+.light.yellow.active {
+    background: var(--signal-yellow);
+    box-shadow: 0 0 12px var(--signal-yellow-glow), 0 0 24px rgba(234,179,8,0.3);
+    border-color: var(--signal-yellow);
+    animation: blink-yellow 0.6s ease-in-out infinite;
+}
+
+@keyframes blink-yellow {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+.light.green.active {
+    background: var(--signal-green);
+    box-shadow: 0 0 12px var(--signal-green-glow), 0 0 24px rgba(34,197,94,0.3);
+    border-color: var(--signal-green);
+}
+
+/* Direction labels */
+.direction-label {
+    position: absolute;
+    font-size: 0.6rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+    z-index: 10;
+}
+
+.north-label { top: 8px; left: 50%; transform: translateX(-50%); }
+.south-label { bottom: 8px; left: 50%; transform: translateX(-50%); }
+.east-label { right: 8px; top: 50%; transform: translateY(-50%); writing-mode: vertical-rl; }
+.west-label { left: 8px; top: 50%; transform: translateY(-50%); writing-mode: vertical-rl; }
+
+/* Lane info (count + timer on the road) */
+.lane-info {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    z-index: 10;
+}
+
+#info-north { top: 125px; left: 50%; transform: translateX(-50%); }
+#info-south { bottom: 125px; left: 50%; transform: translateX(-50%); }
+#info-east { right: 125px; top: 50%; transform: translateY(-50%); }
+#info-west { left: 125px; top: 50%; transform: translateY(-50%); }
+
+.lane-info .count {
+    font-family: var(--font-mono);
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+}
+
+.timer-badge {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    padding: 1px 6px;
+    border-radius: 8px;
+    background: rgba(0,0,0,0.4);
+    color: var(--text-secondary);
+}
+
+/* Vehicle queue indicators */
+.vehicle-queue {
+    display: flex;
+    gap: 3px;
+    z-index: 8;
+    position: absolute;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.north-queue { top: 50px; left: 50%; transform: translateX(-50%); flex-direction: column; width: 80px; }
+.south-queue { bottom: 50px; left: 50%; transform: translateX(-50%); flex-direction: column-reverse; width: 80px; }
+.east-queue { right: 50px; top: 50%; transform: translateY(-50%); flex-direction: row; height: 80px; }
+.west-queue { left: 50px; top: 50%; transform: translateY(-50%); flex-direction: row-reverse; height: 80px; }
+
+.vehicle-dot {
+    width: 8px;
+    height: 6px;
+    border-radius: 2px;
+    background: var(--accent-cyan);
+    opacity: 0.7;
+    animation: vehicle-appear 0.3s ease-out;
+}
+
+@keyframes vehicle-appear {
+    from { transform: scale(0); opacity: 0; }
+    to { transform: scale(1); opacity: 0.7; }
+}
+
+/* --- Phase Bar --- */
+.phase-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+}
+
+.phase-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.phase-label {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+}
+
+.phase-direction {
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: var(--text-primary);
+}
+
+.phase-signal {
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.phase-timer {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex: 0 0 200px;
+}
+
+.timer-bar-bg {
+    flex: 1;
+    height: 6px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.timer-bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    background: linear-gradient(90deg, var(--signal-green), var(--accent-cyan));
+    transition: width 0.5s ease;
+    box-shadow: 0 0 8px rgba(34, 197, 94, 0.3);
+}
+
+.timer-seconds {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--accent-cyan);
+    min-width: 40px;
+    text-align: right;
+}
+
+/* ============================================
+   RIGHT PANEL: Analytics
+   ============================================ */
+
+.lane-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    margin-bottom: 1rem;
+}
+
+.lane-card {
+    background: var(--bg-glass);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 0.65rem;
+    transition: all 0.3s ease;
+}
+
+.lane-card.active-green {
+    border-color: rgba(34, 197, 94, 0.3);
+    box-shadow: 0 0 12px rgba(34, 197, 94, 0.1);
+}
+
+.lane-card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-bottom: 0.5rem;
+}
+
+.lane-title {
+    font-size: 0.75rem;
+    font-weight: 600;
+    flex: 1;
+}
+
+.congestion-badge {
+    font-size: 0.6rem;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.congestion-badge.low {
+    background: rgba(34, 197, 94, 0.12);
+    color: var(--signal-green);
+    border: 1px solid rgba(34, 197, 94, 0.2);
+}
+
+.congestion-badge.moderate {
+    background: rgba(234, 179, 8, 0.12);
+    color: var(--signal-yellow);
+    border: 1px solid rgba(234, 179, 8, 0.2);
+}
+
+.congestion-badge.high {
+    background: rgba(249, 115, 22, 0.12);
+    color: #f97316;
+    border: 1px solid rgba(249, 115, 22, 0.2);
+}
+
+.congestion-badge.critical {
+    background: rgba(239, 68, 68, 0.12);
+    color: var(--signal-red);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    animation: pulse-critical 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse-critical {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+}
+
+.lane-metrics {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.35rem;
+    margin-bottom: 0.5rem;
+}
+
+.metric {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.65rem;
+}
+
+.metric-label {
+    color: var(--text-muted);
+}
+
+.metric-value {
+    font-family: var(--font-mono);
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+/* Density bar */
+.density-bar-container {
+    height: 3px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.density-bar {
+    height: 100%;
+    border-radius: 2px;
+    background: linear-gradient(90deg, var(--signal-green), var(--signal-yellow), var(--signal-red));
+    transition: width 0.5s ease;
+}
+
+/* --- Activity Log --- */
+.log-section {
+    border-top: 1px solid var(--border-color);
+    padding-top: 0.75rem;
+}
+
+.log-container {
+    max-height: 180px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(99,102,241,0.15) transparent;
+}
+
+.log-container::-webkit-scrollbar {
+    width: 3px;
+}
+.log-container::-webkit-scrollbar-thumb {
+    background: rgba(99,102,241,0.15);
+    border-radius: 3px;
+}
+
+.log-entry {
+    font-size: 0.62rem;
+    font-family: var(--font-mono);
+    padding: 0.3rem 0.5rem;
+    border-radius: var(--radius-sm);
+    background: rgba(0,0,0,0.15);
+    color: var(--text-muted);
+    line-height: 1.4;
+    animation: log-in 0.3s ease-out;
+}
+
+@keyframes log-in {
+    from { transform: translateX(-10px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+.log-entry.signal-change {
+    border-left: 2px solid var(--signal-green);
+    color: var(--text-secondary);
+}
+
+.log-entry.warning {
+    border-left: 2px solid var(--signal-yellow);
+    color: var(--signal-yellow);
+}
+
+.log-entry.info {
+    border-left: 2px solid var(--accent-blue);
+    color: var(--text-secondary);
+}
+
+/* ============================================
+   Responsive
+   ============================================ */
+@media (max-width: 1200px) {
+    .main-content {
+        grid-template-columns: 220px 1fr 240px;
+    }
+}
+
+@media (max-width: 900px) {
+    .main-content {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto 1fr auto;
+        height: auto;
+    }
+
+    .panel {
+        border-right: none;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .analytics-panel {
+        border-left: none;
+        border-top: 1px solid var(--border-color);
+    }
+
+    .intersection {
+        width: 340px;
+        height: 340px;
+    }
+}

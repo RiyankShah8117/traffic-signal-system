@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AI-Based Traffic Signal Control System - Real-time adaptive traffic simulation with intelligent signal optimization">
+    <title>AI Traffic Signal Control System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="static/style.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header" id="main-header">
+        <div class="header-left">
+            <div class="logo">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 40 40" fill="none">
+                        <rect x="12" y="2" width="16" height="36" rx="4" fill="url(#logoGrad)" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+                        <circle cx="20" cy="10" r="3.5" fill="#ef4444" class="logo-light-red"/>
+                        <circle cx="20" cy="20" r="3.5" fill="#eab308" class="logo-light-yellow"/>
+                        <circle cx="20" cy="30" r="3.5" fill="#22c55e" class="logo-light-green"/>
+                        <defs>
+                            <linearGradient id="logoGrad" x1="12" y1="2" x2="28" y2="38">
+                                <stop offset="0%" stop-color="#1e293b"/>
+                                <stop offset="100%" stop-color="#0f172a"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+                <div>
+                    <h1>AI Traffic Control</h1>
+                    <p class="subtitle">Adaptive Signal Optimization System</p>
+                </div>
+            </div>
+        </div>
+        <div class="header-right">
+            <div class="status-badge" id="status-badge">
+                <span class="status-dot"></span>
+                <span class="status-text">Idle</span>
+            </div>
+            <div class="timer-display" id="timer-display">
+                <span class="timer-label">Elapsed</span>
+                <span class="timer-value" id="elapsed-time">0:00</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Left Panel: Controls -->
+        <aside class="panel controls-panel" id="controls-panel">
+            <div class="panel-header">
+                <h2>Controls</h2>
+                <div class="panel-icon">⚙️</div>
+            </div>
+
+            <div class="control-group">
+                <label>Simulation</label>
+                <div class="button-group">
+                    <button class="btn btn-start" id="btn-start" onclick="startSimulation()">
+                        <svg viewBox="0 0 20 20" fill="currentColor" width="16" height="16"><polygon points="5,3 17,10 5,17"/></svg>
+                        Start
+                    </button>
+                    <button class="btn btn-stop" id="btn-stop" onclick="stopSimulation()" disabled>
+                        <svg viewBox="0 0 20 20" fill="currentColor" width="16" height="16"><rect x="4" y="4" width="12" height="12" rx="2"/></svg>
+                        Stop
+                    </button>
+                    <button class="btn btn-reset" id="btn-reset" onclick="resetSimulation()">
+                        <svg viewBox="0 0 20 20" fill="currentColor" width="16" height="16"><path d="M10 3a7 7 0 1 0 7 7h-2a5 5 0 1 1-5-5V3z"/><polygon points="10,0 14,4 10,8"/></svg>
+                        Reset
+                    </button>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label>Speed: <span id="speed-value">1.0</span>x</label>
+                <input type="range" class="slider" id="speed-slider" min="0.5" max="5" step="0.5" value="1" oninput="setSpeed(this.value)">
+                <div class="slider-labels">
+                    <span>0.5x</span>
+                    <span>5x</span>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label>Arrival Rates</label>
+                <div class="rate-controls">
+                    <div class="rate-row">
+                        <span class="direction-badge north">N</span>
+                        <input type="range" class="slider slider-sm" min="0" max="0.8" step="0.05" value="0.3" oninput="setRate('north', this.value)">
+                        <span class="rate-val" id="rate-north">0.30</span>
+                    </div>
+                    <div class="rate-row">
+                        <span class="direction-badge south">S</span>
+                        <input type="range" class="slider slider-sm" min="0" max="0.8" step="0.05" value="0.25" oninput="setRate('south', this.value)">
+                        <span class="rate-val" id="rate-south">0.25</span>
+                    </div>
+                    <div class="rate-row">
+                        <span class="direction-badge east">E</span>
+                        <input type="range" class="slider slider-sm" min="0" max="0.8" step="0.05" value="0.4" oninput="setRate('east', this.value)">
+                        <span class="rate-val" id="rate-east">0.40</span>
+                    </div>
+                    <div class="rate-row">
+                        <span class="direction-badge west">W</span>
+                        <input type="range" class="slider slider-sm" min="0" max="0.8" step="0.05" value="0.2" oninput="setRate('west', this.value)">
+                        <span class="rate-val" id="rate-west">0.20</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label>AI Algorithm</label>
+                <div class="algo-info">
+                    <div class="algo-row"><span>Method</span><span class="mono">Weighted Scoring</span></div>
+                    <div class="algo-row"><span>Density Weight</span><span class="mono">40%</span></div>
+                    <div class="algo-row"><span>Wait Time Weight</span><span class="mono">35%</span></div>
+                    <div class="algo-row"><span>Trend Weight</span><span class="mono">25%</span></div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Center: Intersection Visualization -->
+        <section class="center-section" id="center-section">
+            <!-- Stats Cards Row -->
+            <div class="stats-row">
+                <div class="stat-card" id="stat-throughput">
+                    <div class="stat-icon throughput-icon">🚗</div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="total-throughput">0</span>
+                        <span class="stat-label">Total Passed</span>
+                    </div>
+                </div>
+                <div class="stat-card" id="stat-waiting">
+                    <div class="stat-icon waiting-icon">⏳</div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="total-waiting">0</span>
+                        <span class="stat-label">Waiting</span>
+                    </div>
+                </div>
+                <div class="stat-card" id="stat-cycles">
+                    <div class="stat-icon cycles-icon">🔄</div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="total-cycles">0</span>
+                        <span class="stat-label">Cycles</span>
+                    </div>
+                </div>
+                <div class="stat-card" id="stat-efficiency">
+                    <div class="stat-icon efficiency-icon">📊</div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="efficiency-score">--%</span>
+                        <span class="stat-label">Efficiency</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Intersection Canvas -->
+            <div class="intersection-wrapper">
+                <div class="intersection" id="intersection">
+                    <!-- North -->
+                    <div class="road-section road-north" id="road-north">
+                        <div class="signal-light north-light" id="signal-north">
+                            <div class="light red"></div>
+                            <div class="light yellow"></div>
+                            <div class="light green"></div>
+                        </div>
+                        <div class="vehicle-queue north-queue" id="queue-north"></div>
+                        <div class="direction-label north-label">NORTH</div>
+                        <div class="lane-info" id="info-north">
+                            <span class="count">0</span>
+                            <span class="timer-badge" id="timer-north"></span>
+                        </div>
+                    </div>
+
+                    <!-- South -->
+                    <div class="road-section road-south" id="road-south">
+                        <div class="signal-light south-light" id="signal-south">
+                            <div class="light red"></div>
+                            <div class="light yellow"></div>
+                            <div class="light green"></div>
+                        </div>
+                        <div class="vehicle-queue south-queue" id="queue-south"></div>
+                        <div class="direction-label south-label">SOUTH</div>
+                        <div class="lane-info" id="info-south">
+                            <span class="count">0</span>
+                            <span class="timer-badge" id="timer-south"></span>
+                        </div>
+                    </div>
+
+                    <!-- East -->
+                    <div class="road-section road-east" id="road-east">
+                        <div class="signal-light east-light" id="signal-east">
+                            <div class="light red"></div>
+                            <div class="light yellow"></div>
+                            <div class="light green"></div>
+                        </div>
+                        <div class="vehicle-queue east-queue" id="queue-east"></div>
+                        <div class="direction-label east-label">EAST</div>
+                        <div class="lane-info" id="info-east">
+                            <span class="count">0</span>
+                            <span class="timer-badge" id="timer-east"></span>
+                        </div>
+                    </div>
+
+                    <!-- West -->
+                    <div class="road-section road-west" id="road-west">
+                        <div class="signal-light west-light" id="signal-west">
+                            <div class="light red"></div>
+                            <div class="light yellow"></div>
+                            <div class="light green"></div>
+                        </div>
+                        <div class="vehicle-queue west-queue" id="queue-west"></div>
+                        <div class="direction-label west-label">WEST</div>
+                        <div class="lane-info" id="info-west">
+                            <span class="count">0</span>
+                            <span class="timer-badge" id="timer-west"></span>
+                        </div>
+                    </div>
+
+                    <!-- Center intersection -->
+                    <div class="intersection-center" id="intersection-center">
+                        <div class="center-pulse"></div>
+                    </div>
+
+                    <!-- Road markings -->
+                    <div class="road-marking marking-h"></div>
+                    <div class="road-marking marking-v"></div>
+                </div>
+            </div>
+
+            <!-- Current Phase Info -->
+            <div class="phase-bar" id="phase-bar">
+                <div class="phase-info">
+                    <span class="phase-label">Current Phase:</span>
+                    <span class="phase-direction" id="phase-direction">NORTH</span>
+                    <span class="phase-signal" id="phase-signal">🟢 GREEN</span>
+                </div>
+                <div class="phase-timer">
+                    <div class="timer-bar-bg">
+                        <div class="timer-bar-fill" id="timer-bar-fill"></div>
+                    </div>
+                    <span class="timer-seconds" id="phase-seconds">30.0s</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Right Panel: Analytics -->
+        <aside class="panel analytics-panel" id="analytics-panel">
+            <div class="panel-header">
+                <h2>Analytics</h2>
+                <div class="panel-icon">📈</div>
+            </div>
+
+            <!-- Per-direction details -->
+            <div class="lane-details" id="lane-details">
+                <div class="lane-card" id="lane-card-north">
+                    <div class="lane-card-header">
+                        <span class="direction-badge north">N</span>
+                        <span class="lane-title">North</span>
+                        <span class="congestion-badge low" id="cong-north">Low</span>
+                    </div>
+                    <div class="lane-metrics">
+                        <div class="metric"><span class="metric-label">Waiting</span><span class="metric-value" id="metric-north-waiting">0</span></div>
+                        <div class="metric"><span class="metric-label">Passed</span><span class="metric-value" id="metric-north-passed">0</span></div>
+                        <div class="metric"><span class="metric-label">Avg Wait</span><span class="metric-value" id="metric-north-wait">0.0s</span></div>
+                        <div class="metric"><span class="metric-label">Priority</span><span class="metric-value" id="metric-north-priority">0.000</span></div>
+                    </div>
+                    <div class="density-bar-container">
+                        <div class="density-bar" id="density-north" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <div class="lane-card" id="lane-card-south">
+                    <div class="lane-card-header">
+                        <span class="direction-badge south">S</span>
+                        <span class="lane-title">South</span>
+                        <span class="congestion-badge low" id="cong-south">Low</span>
+                    </div>
+                    <div class="lane-metrics">
+                        <div class="metric"><span class="metric-label">Waiting</span><span class="metric-value" id="metric-south-waiting">0</span></div>
+                        <div class="metric"><span class="metric-label">Passed</span><span class="metric-value" id="metric-south-passed">0</span></div>
+                        <div class="metric"><span class="metric-label">Avg Wait</span><span class="metric-value" id="metric-south-wait">0.0s</span></div>
+                        <div class="metric"><span class="metric-label">Priority</span><span class="metric-value" id="metric-south-priority">0.000</span></div>
+                    </div>
+                    <div class="density-bar-container">
+                        <div class="density-bar" id="density-south" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <div class="lane-card" id="lane-card-east">
+                    <div class="lane-card-header">
+                        <span class="direction-badge east">E</span>
+                        <span class="lane-title">East</span>
+                        <span class="congestion-badge low" id="cong-east">Low</span>
+                    </div>
+                    <div class="lane-metrics">
+                        <div class="metric"><span class="metric-label">Waiting</span><span class="metric-value" id="metric-east-waiting">0</span></div>
+                        <div class="metric"><span class="metric-label">Passed</span><span class="metric-value" id="metric-east-passed">0</span></div>
+                        <div class="metric"><span class="metric-label">Avg Wait</span><span class="metric-value" id="metric-east-wait">0.0s</span></div>
+                        <div class="metric"><span class="metric-label">Priority</span><span class="metric-value" id="metric-east-priority">0.000</span></div>
+                    </div>
+                    <div class="density-bar-container">
+                        <div class="density-bar" id="density-east" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <div class="lane-card" id="lane-card-west">
+                    <div class="lane-card-header">
+                        <span class="direction-badge west">W</span>
+                        <span class="lane-title">West</span>
+                        <span class="congestion-badge low" id="cong-west">Low</span>
+                    </div>
+                    <div class="lane-metrics">
+                        <div class="metric"><span class="metric-label">Waiting</span><span class="metric-value" id="metric-west-waiting">0</span></div>
+                        <div class="metric"><span class="metric-label">Passed</span><span class="metric-value" id="metric-west-passed">0</span></div>
+                        <div class="metric"><span class="metric-label">Avg Wait</span><span class="metric-value" id="metric-west-wait">0.0s</span></div>
+                        <div class="metric"><span class="metric-label">Priority</span><span class="metric-value" id="metric-west-priority">0.000</span></div>
+                    </div>
+                    <div class="density-bar-container">
+                        <div class="density-bar" id="density-west" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Activity Log -->
+            <div class="log-section">
+                <div class="panel-header">
+                    <h2>Activity Log</h2>
+                    <div class="panel-icon">📋</div>
+                </div>
+                <div class="log-container" id="log-container">
+                    <div class="log-entry info">System initialized. Press Start to begin simulation.</div>
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.min.js"></script>
+    <script src="static/app.js"></script>
+</body>
+</html>
